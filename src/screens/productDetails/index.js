@@ -102,6 +102,7 @@ const SelectTrip = ({ style, placeholderDate, label, placeholderTime, onChangeDa
 
   const onTimeSelected = (event, value) => {
     onChangeTime && onChangeTime(formatAMPM(value))
+    // console.log("item time : ", value)
     setTimePicker(false);
   };
 
@@ -196,19 +197,19 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
 
   const [userId, setUserId] = useState()
 
-  const getUserId = async() => {
-  let  id = await AsyncStorage.getItem("@USER_ID")
+  const getUserId = async () => {
+    let id = await AsyncStorage.getItem("@USER_ID")
     setUserId(id)
   }
 
-  useEffect(()=> {
+  useEffect(() => {
     getUserId()
-  },[])
+  }, [])
 
   useEffect(() => {
     if (data) {
       setPostData({
-        "carPrice": data && data.price + 25,
+        "carPrice": data && data.price,
         "locations": data && data.location,
         "carPriceDurationId": data && data.price_duration_id,
         "currencyId": data && data.currency_id,
@@ -221,7 +222,7 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
         "endTime": time,
         "insurance": true,
         "currency": "inr",
-        "gst": ((data.price + 25) * (5 / 100)).toFixed(2), 
+        "gst": ((data.price + 25) * (5 / 100)).toFixed(2),
         "qst": ((data.price + 25) * (9.975 / 100)).toFixed(2),
       })
       setReviewData({
@@ -256,6 +257,7 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
 
   const handleCarBook = () => {
     if (token) {
+      calculateCarPrice()
       setCheckout(!checkout)
     } else {
       RNToasty.Normal({
@@ -287,26 +289,24 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
   // booking_days = booking_days == 0 ? 1 : booking_days
 
   const [totalPrice, setTotalPrice] = useState()
-  const [gst, setGst] = useState()
-  const [qst, setQst] = useState()
+  const [amount, setAmount] = useState()
+
 
   useEffect(() => {
     if (data) {
       setPostData({
         ...postData,
-        "carPrice": postData.insurance ? (data.price + 25) * booking_days : data.price * booking_days,
+        "carPrice": amount,
         "distanceAllowed": data.distance * booking_days,
       })
-      // handleChange("carPrice", postData.insurance ? (data.price + 25) * booking_days : data.price * booking_days)
-      // "distanceAllowed": data && data.distance,
     }
-  }, [booking_days,postData.insurance])
+  }, [booking_days, amount])
+
 
   useEffect(() => {
     if (postData.carPrice) {
       setPostData({
         ...postData,
-        // "carPrice": postData.carPrice + ((postData.carPrice) * (5 / 100)).toFixed(2) + ((postData.carPrice) * (9.975 / 100)).toFixed(2),
         "gst": ((postData.carPrice) * (5 / 100)).toFixed(2),
         "qst": ((postData.carPrice) * (9.975 / 100)).toFixed(2)
       })
@@ -317,15 +317,66 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
   }, [postData.carPrice])
 
   useEffect(() => {
-      setTotalPrice((Number(postData.carPrice) + Number(postData.gst) + Number(postData.qst)).toFixed(2))
+    setTotalPrice((Number(postData.carPrice) + Number(postData.gst) + Number(postData.qst)).toFixed(2))
   }, [postData.gst, postData.qst])
+
+  const calculateCarPrice = () => {
+    let price;
+    let startTime, endTime, startAMPM, endAMPM;
+
+    if (postData) {
+      startTime = postData.startTime && postData.startTime.split(":")?.[0]
+      startAMPM = postData.startTime && postData.startTime.split(" ")?.[1]
+      endTime = postData.endTime && postData.endTime.split(":")?.[0]
+      endAMPM = postData.endTime && postData.endTime.split(" ")?.[1]
+    }
+    if (data) {
+      if (booking_days == 1) {
+        price = Number(startTime) < 12 && startAMPM == "AM" ? (data.price) : Number(data.price / 2)
+        console.log(" price 1 : ", price)
+        price = Number(endTime) < 12 && endAMPM == "PM" ? price : Number(price + (data.price / 2))
+        console.log(" price 1.1 : ", price)
+        price = postData.insurance ? price + (25 * booking_days) : price
+        // console.log("start time1 : ", startTime, startAMPM)
+        // console.log("end time1 : ", endTime, endAMPM)
+        // console.log("booking_days, price 1.2 : ", booking_days, price)
+      } else if (booking_days == 2) {
+        price = Number(startTime) < 12 && startAMPM == "AM" ? (data.price) : Number(data.price / 2)
+        // console.log(" price 2 : ", price)
+        price = Number(endTime) < 12 && endAMPM == "PM" ? Number(price + data.price) : Number(price + (data.price / 2))
+        // console.log(" price 2.1 : ", price)
+        price = postData.insurance ? price + (25 * booking_days) : price
+        // console.log("start time2 : ", startTime, startAMPM)
+        // console.log("end time2 : ", endTime, endAMPM)
+        // console.log("booking_days, price 2.2 : ", booking_days, price)
+      } else if (booking_days > 2) {
+        price = Number(startTime) < 12 && startAMPM == "AM" ? (data.price) : Number(data.price / 2)
+        console.log(" price 3 : ", price)
+        price = price + (data.price * (booking_days - 2))
+        console.log(" price 3.0 : ", price)
+        price = Number(endTime) < 12 && endAMPM == "PM" ? Number(price + data.price) : Number(price + (data.price / 2))
+        console.log(" price 3.1 : ", price)
+        price = postData.insurance ? price + (25 * booking_days) : price
+        // console.log("start time3 : ", startTime, startAMPM)
+        // console.log("end time3 : ", endTime, endAMPM) 
+        console.log("booking_days, price 3.2 : ", booking_days, price)
+      }
+      setAmount(price)
+    }
+
+  }
 
 
   // console.log("ratings  details: ", car_ratings && car_ratings[0] && car_ratings[0].student_id)
   // console.log("userId product details: ", userId,  postData.carPrice, postData.gst, postData.qst) 
-  console.log("product details car id : ", postData.carId, postData.insurance, postData.distanceAllowed, booking_days)
 
-  console.log("userId product details: ", userId,  postData.carPrice, postData.gst, postData.qst, totalPrice)
+  // console.log("product details car id : ", postData.carId, postData.insurance, postData.distanceAllowed, booking_days)
+  // console.log("postdata  start time end time  : ", postData.startTime, postData.endTime)
+
+  console.log("userId product details: ", userId, postData.carPrice, postData.gst, postData.qst, totalPrice)
+  
+
+
 
   return (
     <>
@@ -384,6 +435,7 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
                     placeholderDate={"start date"}
                     placeholderTime={"start time"}
                     onChangeDate={(date) => handleChange("startDate", date)}
+                    // onChangeTime={(time) => handleTime("startTime", time)}
                     onChangeTime={(time) => handleChange("startTime", time)}
                     date={postData.startDate}
                     time={postData.startTime}
@@ -394,6 +446,7 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
                     placeholderDate={"end date"}
                     placeholderTime={"end time"}
                     onChangeDate={(date) => handleChange("endDate", date)}
+                    // onChangeTime={(time) => handleTime("endTime", time)}
                     onChangeTime={(time) => handleChange("endTime", time)}
                     date={postData.endDate}
                     time={postData.endTime}
@@ -861,12 +914,12 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
 
                         <View style={styles.totalBtn}>
                           <Text style={styles.totalBtnText}>Subtotal</Text>
-                          <Text style={styles.totalBtnText}>{"$"+ (postData && Number(postData.carPrice))}</Text>
+                          <Text style={styles.totalBtnText}>{"$" + (postData && Number(postData.carPrice))}</Text>
                           {/* <Text style={styles.totalBtnText}>{data && (data.currency.symbol ? data.currency.symbol : "$") + (data && data.price * booking_days)}</Text> */}
                         </View>
                         <View style={styles.totalBtn}>
                           <Text style={styles.totalBtnText}>GST</Text>
-                          <Text style={styles.totalBtnText}>{"$"+ postData.gst}</Text>
+                          <Text style={styles.totalBtnText}>{"$" + postData.gst}</Text>
                         </View>
                         {/* <View style={styles.totalBtn}>
                           <Text style={styles.totalBtnText}>Insurance Amount</Text>
@@ -874,12 +927,12 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
                         </View> */}
                         <View style={styles.totalBtn}>
                           <Text style={styles.totalBtnText}>QST</Text>
-                          <Text style={styles.totalBtnText}>{"$"+  postData.qst}</Text>
+                          <Text style={styles.totalBtnText}>{"$" + postData.qst}</Text>
                           {/* <Text style={styles.totalBtnText}>{data && data.currency.symbol + "0"}</Text> */}
                         </View>
                         <View style={styles.totalBtn}>
                           <Text style={styles.totalBtnText}>Total</Text>
-                           <Text style={styles.totalBtnText}>{"$"+ (Number(totalPrice)).toFixed(2)}</Text>
+                          <Text style={styles.totalBtnText}>{"$" + (Number(totalPrice)).toFixed(2)}</Text>
                           {/* <Text style={styles.totalBtnText}>{data && data.currency.symbol +(Number(postData.carPrice + Number(postData.gst) + Number(postData.qst))).toFixed(2)}</Text> */}
                           {/* <Text style={styles.totalBtnText}>{data && data.currency.symbol + (Number(postData.insurance ? (data && data.price + 25) * booking_days : data.price * (data && data.price + 25) * booking_days))}</Text> */}
                         </View>
@@ -887,7 +940,7 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
 
                         <Button1 style={styles.btn}
                           backgroundColor={COLORS.black} textColor={COLORS.white}
-                          onPress={() => { setCheckout(!checkout), StoreCarBookingApi({...postData, "carPrice": totalPrice}, (Number(totalPrice)).toFixed(2), "INR", navigation, route.params && route.params.routeName) }}
+                          onPress={() => { setCheckout(!checkout), StoreCarBookingApi({ ...postData, "carPrice": totalPrice }, (Number(totalPrice)).toFixed(2), "INR", navigation, route.params && route.params.routeName) }}
                         >
                           Process To Check Out
                         </Button1>
