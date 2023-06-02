@@ -1,7 +1,18 @@
 // export const STRIPE_PUBLISH_KEY = "pk_test_51Mw8mWSCc88vSVBkw6pUOUgLKORLszeJE3JIL3xJKWu1tzHGtKINthXbshNsvSd1N8ME51x2BpjBkxHyEuUAATCY00gY3b3z03"
 // export const STRIPE_SECRET_KEY = "sk_test_51Mw8mWSCc88vSVBk4IaSDMxwTanz7R6aiismSJqtSBV0X3LWY6UO0NMgMFUQufINGqEmkENGQKKweVAHdgERapVc00yBaRUYre"
 
-export const  STRIPE_PUBLISH_KEY = "pk_test_51LcBlVSAoyeeib7XpyPfAG8LVM0d1UW4eicTHs39YXNlKtY7enzfuFkslbBYWt7bxlJHWHP64UKhKTT0qI6kOqC300DNCbz5K0"
-export const STRIPE_SECRET_KEY = "sk_test_51LcBlVSAoyeeib7XKPZpix29b96rcja0aBeVcepDl0hXckMJL8H0mjdygL6OsfPhpi3enFkOgyQH7BqYPJzpr9AG00AXGMETMg"
+// export const  STRIPE_PUBLISH_KEY = "pk_test_51LcBlVSAoyeeib7XpyPfAG8LVM0d1UW4eicTHs39YXNlKtY7enzfuFkslbBYWt7bxlJHWHP64UKhKTT0qI6kOqC300DNCbz5K0"
+// export const STRIPE_SECRET_KEY = "sk_test_51LcBlVSAoyeeib7XKPZpix29b96rcja0aBeVcepDl0hXckMJL8H0mjdygL6OsfPhpi3enFkOgyQH7BqYPJzpr9AG00AXGMETMg"
 
 export const PAYMENT_INTENT_CLIENT_SECRET = "pi_3MxqAjSCc88vSVBk1yfw6Cqv_secret_7BKuI8nA7kG8LwE4IBm08I4Bm"
+
+
+// client stripe keys 
+// Secret key :-
+
+// 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
+
+// Stripe Published Key              pk_live_51MjqAoLmSkgIBrdjq8lR8YKxYuvpAMVK9ag2t9RzMWNLw0NHumnJ1NqYMar7i38WccD1MuOTTPcJ7RV4x0xTSd7S003sQJSbwn
+
+export const  STRIPE_PUBLISH_KEY = "pk_live_51MjqAoLmSkgIBrdjq8lR8YKxYuvpAMVK9ag2t9RzMWNLw0NHumnJ1NqYMar7i38WccD1MuOTTPcJ7RV4x0xTSd7S003sQJSbwn"
+export const STRIPE_SECRET_KEY = "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"

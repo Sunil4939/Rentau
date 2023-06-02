@@ -48,7 +48,7 @@ const SearchPage = ({ navigation, token, loading, location, AvailableLocationApi
             <View style={styles.searchBox}>
               <TouchableOpacity style={styles.search}
                   //  onPress={() => { SingleCarDataApi(item.id), navigation.navigate("ProductDetails", {routeName: "AddCarList"}) }}
-                onPress={() => navigation.navigate(token ? "Product" : "SearchScreen", {routeName: "SearchPage"})}
+                onPress={() => navigation.navigate(token ? "Product" : "SearchScreen")}
               >
                 <Icons name={"search"} size={20} color={COLORS.black} style={styles.searchIcon} />
                 <TextInput placeholder={"City, Airport, Address or Hotel"}

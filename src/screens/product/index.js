@@ -217,7 +217,7 @@ const Product = ({ navigation, filter,route, FilterApi, loading, SingleCarDataAp
                     carName={item.name.length > 10 ? item.name.slice(0, 10) + "..." : item.name}
                     fuelType={item.fuel}
                     transmision={item.transmission}
-                    onPress={() => {SingleCarDataApi(item.id), navigation.navigate("ProductDetails", {routeName: route.params && route.params.routeName}) }}
+                    onPress={() => {SingleCarDataApi(item.id), navigation.navigate("ProductDetails") }}
                     // onPress={() => { SingleCarDataApi(item.id), navigation.navigate("ProductDetails", {routeName: route.name}) }}
                   />
                 )}

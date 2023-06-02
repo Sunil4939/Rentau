@@ -248,8 +248,6 @@ import { COLORS, SIZES } from '../../constants';
 import styles from './styles'
 import Loading1 from '../../component/atoms/Loading/Loading1'
 import { CreatePaymentApi, CreateSessionId, UpdateBookingStatus } from '../../redux/actions/bookingAction';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import Icons from '../../component/atoms/Icons';
 
 
 
@@ -290,7 +288,7 @@ const Payment = ({ navigation, CreatePaymentApi, createCustomer, UpdateBookingSt
             setPaymentStatus('failed');
             navigation.navigate("PaymentFailed")
         } else {
-            navigation.navigate("PaymentSuccess", { routeName: route.params && route.params.routeName, amount: amount})
+            navigation.navigate("PaymentSuccess", {amount: amount})
             // navigation.navigate("PaymentSuccess", { amount: amount })
             // UpdateBookingStatus(car_booking_id, paymentIntent && paymentIntent.id, navigation)
             CreatePaymentApi({

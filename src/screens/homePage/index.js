@@ -79,7 +79,7 @@ const HomePage = ({ navigation, token, userData,AllCarListApi, location, allCarL
         {/* search box */}
         <View style={styles.searchBox}>
           <TouchableOpacity style={styles.search}
-            onPress={() => navigation.navigate("Product",{routeName: "HomePage"})}
+            onPress={() => navigation.navigate("Product")}
           >
             <Icons name={"search"} size={20} color={COLORS.black} style={styles.searchIcon} />
             <TextInput placeholder={"City, Airport, Address or Hotel"}

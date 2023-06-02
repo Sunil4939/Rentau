@@ -89,7 +89,7 @@ const MorePage = ({ LogoutApi, navigation, userData, loading, token, userRole, G
                             Contact Support
                         </NavigateButton>
 
-                        {userRole == "vendor" &&
+                        {userRole == "vendor" ?
                             <>
                                 <NavigateButton iconName={"contact"}
                                     iconStyle={styles.account}
@@ -104,19 +104,22 @@ const MorePage = ({ LogoutApi, navigation, userData, loading, token, userRole, G
                                     All Claims
                                 </NavigateButton>
                             </>
+                            :
+                            <NavigateButton iconName={"contact"}
+                                iconStyle={styles.account}
+                                onPress={() => { navigation.navigate("Terms") }}                                >
+                                Become a host
+                            </NavigateButton>
                         }
-                        {userRole == "customer" &&
+                        {/* {userRole == "customer" &&
                             <>
                                 <NavigateButton iconName={"contact"}
                                     iconStyle={styles.account}
-                                    onPress={() => {navigation.navigate("Terms"), dispatch({
-                                        type: RESET_NAV,
-                                        payload: "MorePage"
-                                    })}}                                >
+                                    onPress={() => {navigation.navigate("Terms")}}                                >
                                     Become a host
                                 </NavigateButton>
                             </>
-                        }
+                        } */}
                         {/* <NavigateButton iconName={"contact"}
                             iconStyle={styles.account}
                             // onPress={() => Linking.openURL("https://reactnative.dev/")}

@@ -13,7 +13,6 @@ import SwipeCarBox from '../../component/atoms/swipeBox/SwipeCarBox';
 import findAgoDays from '../../services/findAgoDays';
 import { GetUserDataApi } from '../../redux/actions/authAction';
 import { SingleCarDataApi } from '../../redux/actions/productAction';
-import { RESET_NAV } from '../../redux/types';
 
 
 const AddCarList = ({ navigation, GetCarListApi,userRole, carList, token, GetCarImageApi, SingleCarDataApi, GetUserDataApi, DeleteCarDataApi, carImages, userData, loading }) => {
@@ -79,7 +78,7 @@ const AddCarList = ({ navigation, GetCarListApi,userRole, carList, token, GetCar
                         createdAt={findAgoDays(item.created_at)}
                         editPress={() => navigation.navigate("UpdateCar", { carData: item })}
                         deletePress={() => DeleteCarDataApi(item.id)}
-                        onPress={() => { SingleCarDataApi(item.id), navigation.navigate("ProductDetails", {routeName: "AddCarList"}) }}
+                        onPress={() => { SingleCarDataApi(item.id), navigation.navigate("ProductDetails") }}
                         // onPress={() => { navigation.navigate("ProductDetails", { carData: item }) }}
                       />
                     ))}
@@ -90,10 +89,7 @@ const AddCarList = ({ navigation, GetCarListApi,userRole, carList, token, GetCar
                 <Button1 style={{ width: SIZES.width * .9 }}
                   backgroundColor={COLORS.black}
                   textColor={COLORS.white}
-                  onPress={() => {navigation.navigate("Terms"), dispatch({
-                    type: RESET_NAV,
-                    payload: "AddCarList"
-                })}}
+                  onPress={() => {navigation.navigate("Terms")}}
                 >Add new list</Button1>
               </View>
             </ScrollView>

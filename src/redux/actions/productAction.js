@@ -172,7 +172,7 @@ export const SingleCarDataApi = (carId) => async dispatch => {
 };
 
 
-export const StoreCarBookingApi = (postData,amount, currency, navigation, routeName) => async dispatch => {
+export const StoreCarBookingApi = (postData,amount, currency, navigation) => async dispatch => {
     dispatch({
         type: LOADING,
         payload: true,
@@ -193,7 +193,7 @@ export const StoreCarBookingApi = (postData,amount, currency, navigation, routeN
             if (response.data.response) {
                 // console.log(" store car booking data api : ", response.data.data)
                 dispatch(createCustomer(amount, currency))
-                navigation.navigate("Payment", { routeName: routeName,car_booking_id:response.data.data.id, amount: amount})
+                navigation.navigate("Payment", {car_booking_id:response.data.data.id, amount: amount})
                 // navigation && navigation.navigate("Payment", {car_booking_id:response.data.data.id,  amount:amount})
                 // dispatch(GetAllNotification())
                 dispatch({

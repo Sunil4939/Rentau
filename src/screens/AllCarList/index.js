@@ -77,7 +77,7 @@ const AllCarList = ({ navigation, token, userData, loading, AllCarListApi, allCa
                       style={index == 0 ? { marginTop: SIZES.height * .02 } : null}
                       start={item.location.location}
                       // onPress={() => { navigation.navigate("ProductDetails", { carData: item }) }}
-                      onPress={() => { SingleCarDataApi(item.id), navigation.navigate("ProductDetails", {routeName: "AllCarList"}) }}
+                      onPress={() => { SingleCarDataApi(item.id), navigation.navigate("ProductDetails") }}
                     />
                   ))}
                 </View>

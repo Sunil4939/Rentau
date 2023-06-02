@@ -9,19 +9,19 @@ import { STRIPE_PUBLISH_KEY } from "./services/keys";
 
 
 const App = () => {
-useEffect(() => {
-  SplashScreen.hide();
-}, [])
+  useEffect(() => {
+    SplashScreen.hide();
+  }, [])
 
   return (
     <Provider store={store}>
       <StripeProvider publishableKey={STRIPE_PUBLISH_KEY}
-      merchantIdentifier="merchant.identifier" // required for Apple Pay
-      urlScheme="your-url-scheme" // required for 3D Secure and bank redirects
-    >
-      <NavigationContainer>
-        <Root />
-      </NavigationContainer>
+        merchantIdentifier="merchant.identifier" // required for Apple Pay
+        urlScheme="your-url-scheme" // required for 3D Secure and bank redirects
+      >
+        <NavigationContainer>
+          <Root />
+        </NavigationContainer>
       </StripeProvider>
     </Provider>
 

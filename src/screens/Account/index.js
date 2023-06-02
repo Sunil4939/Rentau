@@ -40,7 +40,10 @@ const Account = ({ navigation }) => {
         <View>
           <Button2 title={"Email"} text={"jhonsmith@gmail.com"}
             onPress={() => setCondition("email")} />
-          <Button2 title={"Password"}  onPress={() => navigation.navigate("ChangePassword")} />
+          <Button2 title={"Password"}  
+          // onPress={() => navigation.navigate("ForgetPassword")}
+          onPress={() => navigation.navigate("ChangePassword")}
+           />
           <Button2 title={"Google"} text={"Not connectd"} />
           <Button2 title={"Facebook"} text={"Not connectd"} />
           <Button2 title={"Mobile phone"} onPress={() => navigation.navigate("EnterMobileNo")} />

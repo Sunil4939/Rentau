@@ -104,7 +104,7 @@ export const LoginApi = (postData, navigation) => async dispatch => {
                     type: USER_ROLE,
                     payload: response.data.message.role
                 })
-               
+
                 dispatch({
                     type: LOADING,
                     payload: false,
@@ -128,10 +128,9 @@ export const LoginApi = (postData, navigation) => async dispatch => {
             });
             console.log("login error : ", error)
             RNToasty.Error({
-                title: "login error ",
+                title: "login error",
                 duration: 2,
             });
-
         })
 };
 
@@ -329,10 +328,10 @@ export const GetHostDataApi = () => async dispatch => {
                     type: HOST_DATA,
                     payload: response.data.data[0],
                 })
-                dispatch({
-                    type: USER_ROLE,
-                    payload: response.data.data[0].role,
-                })
+                // dispatch({
+                //     type: USER_ROLE,
+                //     payload: response.data.data[0].role,
+                // })
                 // RNToasty.Success({
                 //     title: "get user data successfully",
                 //     duration: 2,
@@ -369,9 +368,13 @@ export const ForgetPasswordApi = (postData, navigation) => async (dispatch, getS
 
     // const {userData} = getState().auth
     // console.log("forget userData : ", userData)
+    // postData = {
+    //     // email: "trubasunil@gmail.com"
+    //     email: "sp0264857@gmail.com"
+    // }
 
     postData = await objectToFormData(postData)
-    // console.log("forget post data : ", postData)
+    console.log("forget post data : ", postData)
 
     dispatch({
         type: LOADING,
@@ -385,7 +388,7 @@ export const ForgetPasswordApi = (postData, navigation) => async (dispatch, getS
         },
     })
         .then(async response => {
-            if (response.data.response) {
+            if (response.data?.response) {
                 // console.log("host update data : ", response.data.data)
                 navigation && navigation.replace("Login")
                 RNToasty.Success({
@@ -401,10 +404,10 @@ export const ForgetPasswordApi = (postData, navigation) => async (dispatch, getS
                     type: LOADING,
                     payload: false,
                 });
-                // RNToasty.Error({
-                //    title: "Invalid email",
-                //     duration: 2,
-                // });
+                RNToasty.Info({
+                    title: response.data.message,
+                    duration: 2,
+                });
             }
         })
         .catch(error => {
@@ -412,7 +415,13 @@ export const ForgetPasswordApi = (postData, navigation) => async (dispatch, getS
                 type: LOADING,
                 payload: false,
             });
-            console.log("forget error : ", error)
+            console.log("forget error : ", error.response?.data)
+            // if (error.response?.data) {
+            //     RNToasty.Error({
+            //         title: error.response?.data.message,
+            //         duration: 2,
+            //     });
+            // }
             RNToasty.Error({
                 title: "Invalid email",
                 duration: 2,

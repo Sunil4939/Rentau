@@ -3,9 +3,7 @@ import { View, Text, TouchableOpacity, Linking } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { connect } from 'react-redux';
 import Button1 from '../../component/atoms/buttons/Button1';
-import Icons from '../../component/atoms/Icons';
 import InputWithIcon from '../../component/atoms/inputs/InputWithIcon';
-import InputWithIcon1 from '../../component/atoms/inputs/InputWithIcon1';
 import { COLORS, SIZES } from '../../constants';
 import { ForgetPasswordApi, LoginApi } from '../../redux/actions/authAction';
 import styles from './styles';
@@ -14,7 +12,7 @@ import { RNToasty } from 'react-native-toasty';
 
 
 const ForgetPassword = ({ navigation, ForgetPasswordApi }) => {
-    const [secure, setSecure] = useState(true)
+    const [email, setEmail] = useState('')
 
     const [postData, setPostData] = useState({
         email: null,
@@ -30,6 +28,9 @@ const ForgetPassword = ({ navigation, ForgetPasswordApi }) => {
     const handleSubmit = () => {
         if (postData.email) {
             ForgetPasswordApi(postData, navigation)
+            setPostData({
+                "email": null
+            })
         } else {
             RNToasty.Error({
                 title: "Please enter your email",

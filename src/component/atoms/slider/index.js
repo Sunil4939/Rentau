@@ -24,7 +24,7 @@ const useInterval = (callback, delay) => {
 
 
 const Slider = ({ data, duration }) => {
-    const  slider = [images.car1, images.car2, images.car3, images.car4]
+    const slider = [images.car1, images.car2, images.car3, images.car4]
     data = data ? data : slider;
     const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
     const [dataState, setDataState] = useState(data);
@@ -66,43 +66,43 @@ const Slider = ({ data, duration }) => {
     return (
         <View style={styles.container} >
             {/* <View> */}
-                <FlatList
-                    data={dataState}
-                    renderItem={({ item }) => (
+            <FlatList
+                data={dataState}
+                renderItem={({ item }) => (
+                    <View
+                        style={styles.container}
+                    >
                         <View
-                            style={styles.container}
+                            style={styles.imageBox}
                         >
-                            <View
-                                style={styles.imageBox}
-                            >
-                                <Image
-                                    source={data ? {uri: http2 + item} : item}
-                                    // source={{uri: item}}
-                                    style={styles.image}
-                                    resizeMode="stretch"
-                                />
-                            </View>
+                            <Image
+                                source={data ? { uri: http2 + item } : item}
+                                // source={{uri: item}}
+                                style={styles.image}
+                                resizeMode="stretch"
+                            />
                         </View>
-                    )}
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                    key={({ _, index }) => index}
-                    pagingEnabled
-                    decelerationRate="fast"
-                    bounces={false}
-                    snapToInterval={SIZES.width}
-                    ref={ref}
-                    viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
-                    getItemLayout={(data, index) => ({
-                        length: SIZES.width,
-                        offset: SIZES.width * index,
-                        index,
-                    })}
-                    windowSize={1}
-                    initialNumToRender={1}
-                    maxToRenderPerBatch={1}
-                    removeClippedSubviews={true}
-                />
+                    </View>
+                )}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                key={({ _, index }) => index}
+                pagingEnabled
+                decelerationRate="fast"
+                bounces={false}
+                snapToInterval={SIZES.width}
+                ref={ref}
+                viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
+                getItemLayout={(data, index) => ({
+                    length: SIZES.width,
+                    offset: SIZES.width * index,
+                    index,
+                })}
+                windowSize={1}
+                initialNumToRender={1}
+                maxToRenderPerBatch={1}
+                removeClippedSubviews={true}
+            />
             {/* </View> */}
             <View
                 style={styles.indicatorRow}

@@ -14,6 +14,7 @@ import { LogBox } from 'react-native';
 import { GetCarListApi } from '../redux/actions/vendorRegistration';
 import { GetUserDataApi } from '../redux/actions/authAction';
 import ForgetPassword from '../screens/ForgetPassword';
+import StackNavigator from '../navigation/StackNavigator';
 
 
 
@@ -54,12 +55,14 @@ const Root = ({ token, userData, GetUserDataApi, }) => {
                 <Loading />
                 :
                 <Stack.Navigator
-                    initialRouteName='BottomTab'
+                    // initialRouteName='BottomTab'
+                    initialRouteName='StackNavigator'
                     screenOptions={() => ({
                         headerShown: false,
                         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
                     })}>
-                    <Stack.Screen
+                        <Stack.Screen name="StackNavigator" component={StackNavigator} />
+                    {/* <Stack.Screen
                         name="BottomTab"
                         component={BottomTab}
                     />
@@ -67,7 +70,7 @@ const Root = ({ token, userData, GetUserDataApi, }) => {
                     <Stack.Screen name="Login" component={Login} />
                     <Stack.Screen name="SignUp" component={SignUp} />
                     <Stack.Screen name="ResetPassword" component={ResetPassword} />
-                    <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
+                    <Stack.Screen name="ForgetPassword" component={ForgetPassword} /> */}
                 </Stack.Navigator>
             }
         </>

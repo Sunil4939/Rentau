@@ -57,7 +57,7 @@ export const GetCarListApi = () => async dispatch => {
 };
 
 export const SaveVendorDataApi = (postdataIn, navigation) => async (dispatch, getState) => {
-    const {resetNav} = getState().auth
+    // const {resetNav} = getState().auth
     dispatch({
         type: LOADING,
         payload: true,
@@ -89,11 +89,11 @@ export const SaveVendorDataApi = (postdataIn, navigation) => async (dispatch, ge
                     payload: false,
                 });
                 navigation && navigation.navigate('CarList')
-                navigation && resetNav && navigation.reset({index: 0, routes: [{ name: resetNav }]})
-                dispatch({
-                    type: RESET_NAV,
-                    payload: null,
-                });
+                // navigation && resetNav && navigation.reset({index: 0, routes: [{ name: resetNav }]})
+                // dispatch({
+                //     type: RESET_NAV,
+                //     payload: null,
+                // });
                 // navigation && navigation.replace('AllCarList')
                 
             } else {

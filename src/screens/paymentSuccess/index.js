@@ -53,7 +53,7 @@ const PaymentSuccess = ({ navigation, route }) => {
                 <View style={{ alignItems: 'center', }}>
                     <TouchableOpacity style={styles.btn}
                     onPress={() => {navigation.navigate("Trips")
-                    route.params && route.params.routeName && navigation && navigation.reset({index: 0, routes: [{ name: route.params.routeName }]})
+                    // route.params && route.params.routeName && navigation && navigation.reset({index: 0, routes: [{ name: route.params.routeName }]})
                     }}
                     >
                         <Text style={styles.btnText}>Go to Bookings</Text>

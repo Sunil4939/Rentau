@@ -2,11 +2,14 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import {getUniqueId} from 'react-native-device-info';
 
-export const baseURL = 'https://www.car.theprojecttest.xyz/api/'
-export const http2 = 'https://www.car.theprojecttest.xyz/'
+// export const baseURL = 'https://www.car.theprojecttest.xyz/api/'
+// export const http2 = 'https://www.car.theprojecttest.xyz/'
+export const baseURL = 'https://www.rentau.ca/api/'
+export const http2 = 'https://www.rentau.ca/'
+
 
 const http = axios.create({
-	baseURL: 'https://www.car.theprojecttest.xyz/api/',
+	baseURL: 'https://www.rentau.ca/api/',
 	timeout: 10000,
 	headers: {
 		'Content-Type': 'application/json',

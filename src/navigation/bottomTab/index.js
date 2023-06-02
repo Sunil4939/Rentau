@@ -4,7 +4,6 @@ import { COLORS, icons, } from "../../constants";
 import styles from "./styles";
 import { AddCarStack, CarListStack, FavoriteStack, HomeStack, InboxStack, MoreStack, SearchStack, TripStack } from "../stackNavigator";
 import Icons from "../../component/atoms/Icons";
-import { useState } from "react";
 import { connect } from "react-redux";
 import Auth from "../../screens/auth";
 
