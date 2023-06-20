@@ -81,7 +81,7 @@ const Notification = ({ navigation }) => {
   //     message = notification && notification.filter(item => item.booking_details.student_id == userId || item.message.id == userId )
   //     setNotificationList(message)
   //   }
-    
+
   //   console.log("notification1 : ", message && message.length)
   // }, [userRole, userId]) 
 
@@ -94,7 +94,7 @@ const Notification = ({ navigation }) => {
   //  getUserId()
   // }, [])
 
-  console.log("notification2 : ", notification&& notification.length)
+  console.log("notification2 : ", notification && notification.length)
 
   return (
     <>
@@ -103,6 +103,10 @@ const Notification = ({ navigation }) => {
         :
         notification && notification[0] ?
           <View style={styles.container}>
+            <StatusBar
+              backgroundColor={COLORS.light}
+              barStyle="dark-content" 
+            />
             <View style={{ alignItems: 'center' }}>
               <FlatList
                 data={notification}
@@ -133,10 +137,11 @@ const Notification = ({ navigation }) => {
 
 }
 
-const InboxPage = ({ navigation, token, GetAllNotification }) => {
+const InboxPage = ({ navigation, route, token, GetAllNotification }) => {
   useEffect(() => {
     GetAllNotification()
   }, [])
+
   return (
     <View
       style={styles.container}

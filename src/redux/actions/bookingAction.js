@@ -112,13 +112,15 @@ export const CreateSessionId = (postData, amount, navigation) => async dispatch 
         })
 };
 
-export const CreatePaymentApi = (postData) => async dispatch => {
+export const CreatePaymentApi = (postData, amount, navigation) => async dispatch => {
     dispatch({
         type: LOADING,
         payload: true,
     });
 
     postData = await objectToFormData(postData)
+
+    // console.log('CreatePaymentApi : ', postData, amount)
 
     http.post(`create_payment`, postData, {
         enctype: "multipart/form-data",
@@ -132,27 +134,25 @@ export const CreatePaymentApi = (postData) => async dispatch => {
                 dispatch(ShowAllBookingApi())
                 dispatch(BookingHistoryApi())
                 dispatch(GetAllNotification())
+                navigation?.navigate("PaymentSuccess", { amount: amount })
                 dispatch({
                     type: LOADING,
                     payload: false,
                 });
-                //  RNToasty.Success({
-                //     title: "payment create successfully",
-                //     duration: 2,
-                // });
                 // RNToasty.Success({
                 //     title: "payment create successfully",
                 //     duration: 2,
                 // });
+
             } else {
                 dispatch({
                     type: LOADING,
                     payload: false,
                 });
-                // RNToasty.Info({
-                //     title: response.data.message,
-                //     duration: 2,
-                // });
+                RNToasty.Info({
+                    title: response.data.message,
+                    duration: 2,
+                });
             }
         })
         .catch(error => {
@@ -160,12 +160,11 @@ export const CreatePaymentApi = (postData) => async dispatch => {
                 type: LOADING,
                 payload: false,
             });
-            // if (error.response.data.message) {
-            //     RNToasty.Error({
-            //         title: error.response.data.message,
-            //         duration: 2,
-            //     });
-            // }
+            console.log("payment create errror : ", error.response)
+            RNToasty.Error({
+                title: error.response?.data?.message,
+                duration: 2,
+            });
         })
 };
 
@@ -327,14 +326,14 @@ export const UpdatePickupLocation = (car_booking_id, postData) => async (dispatc
 };
 
 export const BookingCancel = (booking_id) => async (dispatch, getState) => {
-    const {userRole} = getState().auth
+    const { userRole } = getState().auth
     dispatch({
         type: LOADING,
         payload: true,
     });
 
     const booking_cancel_url = userRole == "vendor" ? "vendor-booking-cancel" : "customer-booking-cancel"
-    console.log("userRole : ",booking_id, userRole)
+    console.log("userRole : ", booking_id, userRole)
 
     http.get(`${booking_cancel_url}?bookingId=${booking_id}`)
         .then(response => {
@@ -405,7 +404,7 @@ export const MarkBookingComplete = (booking_id, postData) => async (dispatch, ge
                     title: "Booking complete successfully",
                     duration: 2,
                 });
-                
+
                 dispatch({
                     type: LOADING,
                     payload: false,
@@ -607,7 +606,7 @@ export const CreateClaimApi = (postData, navigation) => async (dispatch, getStat
                     title: "Create claim successfully",
                     duration: 2,
                 });
-                
+
                 dispatch({
                     type: LOADING,
                     payload: false,

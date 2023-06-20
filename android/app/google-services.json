@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "920194424169",
+    "project_id": "rentau-90e1f",
+    "storage_bucket": "rentau-90e1f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:920194424169:android:f846032f3416747dd371f8",
+        "android_client_info": {
+          "package_name": "com.sunshine.rentau"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "920194424169-3li11imb4e045hl12hge4b47nb2ur45k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmlkbO1HtIOTnqqtLHomivknRGWc1MM5Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "920194424169-3li11imb4e045hl12hge4b47nb2ur45k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -80,6 +80,8 @@ const Booked = ({ navigation, }) => {
   const userRole = useSelector(state => state.auth.userRole)
   const singleBooking = useSelector(state => state.booking.singleBooking)
 
+  // console.log("booking data booked : ", bookingData)
+
   const [bookingDays, setBookingDays] = useState();
 
   const today = new Date()
@@ -194,7 +196,7 @@ const Booked = ({ navigation, }) => {
     handleChange("extraAmount", extraAmount)
   }, [postData.current_odometer])
 
-  console.log("postData  : ", postData)
+  // console.log("postData  : ", postData)
 
   const handleComplete = (distance_unit_id, last_odometer, price, allowed_distance, booking_id) => {
     setPostData({

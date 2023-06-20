@@ -8,6 +8,9 @@ import { SearchCarApi } from '../../redux/actions/searchAction';
 import { useEffect } from 'react';
 import { AvailableLocationApi } from '../../redux/actions/searchAction';
 import Loading from '../../component/atoms/Loading';
+import Button1 from '../../component/atoms/buttons/Button1';
+import { displayNotification } from '../../utils/notifeeNotification';
+import { sendNotification } from '../../services/notification';
 
 
 const TextBox = ({ iconName, iconStyle, title, children }) => {
@@ -30,6 +33,15 @@ const SearchPage = ({ navigation, token, loading, location, AvailableLocationApi
   useEffect(() => {
     AvailableLocationApi()
   }, [])
+
+  const notificationData = {
+    "data": { "name": "sunil", "age": 20 },
+    "notification": {
+      "body": "This is an FCM notification message!",
+      "title": "FCM Message"
+    },
+    "token": "feEl_7t9Raq47Fv3QbiNGW:APA91bENuAMOFR-36DxgoLkY91rYiRBcKZfpQxQWcRiNmKF77IXR31VtgX6Dl1yOsDp9ESqPTnOsAb5mD4aJ-lkUAuUnFBLOlWceCWJQANMpfpp7CRAEzoMUmoLfWdusbm3ZSqKkLmT-"
+  }
   return (
     <>
       {loading ?
@@ -47,7 +59,7 @@ const SearchPage = ({ navigation, token, loading, location, AvailableLocationApi
             <Image source={images.image2} style={styles.bgImage} resizeMode="stretch" />
             <View style={styles.searchBox}>
               <TouchableOpacity style={styles.search}
-                  //  onPress={() => { SingleCarDataApi(item.id), navigation.navigate("ProductDetails", {routeName: "AddCarList"}) }}
+                //  onPress={() => { SingleCarDataApi(item.id), navigation.navigate("ProductDetails", {routeName: "AddCarList"}) }}
                 onPress={() => navigation.navigate(token ? "Product" : "SearchScreen")}
               >
                 <Icons name={"search"} size={20} color={COLORS.black} style={styles.searchIcon} />
@@ -60,6 +72,8 @@ const SearchPage = ({ navigation, token, loading, location, AvailableLocationApi
               </TouchableOpacity>
             </View>
           </View>
+
+          {/* <Button1 onPress={() => sendNotification(notificationData.token, notificationData.data)}>Send notification</Button1> */}
 
           <View style={styles.contentBox}>
             <Text style={styles.title}>Find your drive</Text>
@@ -97,7 +111,8 @@ const SearchPage = ({ navigation, token, loading, location, AvailableLocationApi
                 </View>
               </View>
             </View>
-            {location &&
+            {/* Available location container */}
+            {/* {location &&
               <View
                 style={{ width: SIZES.width * .9, }}
               >
@@ -117,19 +132,8 @@ const SearchPage = ({ navigation, token, loading, location, AvailableLocationApi
                   numColumns={2}
                   showsVerticalScrollIndicator={false}
                 />
-
-                {/* <View style={styles.boxRow}>
-            <View style={styles.box1}>
-              <Image source={images.image6} style={styles.image6} resizeMode='contain' />
-              <Text style={styles.imageText}>Los Angeles</Text>
-            </View>
-            <View style={styles.box1}>
-              <Image source={images.image6} style={styles.image6} resizeMode='contain' />
-              <Text style={styles.imageText}>Miami</Text>
-            </View>
-          </View> */}
               </View>
-            }
+            } */}
           </View>
         </ScrollView>
       }

@@ -75,7 +75,7 @@ const AllCarList = ({ navigation, token, userData, loading, AllCarListApi, allCa
                       price={item.location.currency.symbol + item.location.price}
                       carName={item.brand}
                       style={index == 0 ? { marginTop: SIZES.height * .02 } : null}
-                      start={item.location.location}
+                      start={item.location?.location?.split(",")?.[0]}
                       // onPress={() => { navigation.navigate("ProductDetails", { carData: item }) }}
                       onPress={() => { SingleCarDataApi(item.id), navigation.navigate("ProductDetails") }}
                     />

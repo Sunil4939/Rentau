@@ -40,6 +40,7 @@ export const CLAIM_List = "CLAIM_List"
 
 // home
 export const All_CAR_LIST = "All_CAR_LIST"
+export const DEVICE_TOKEN = "DEVICE_TOKEN"
 
 // home
 export const NOTIFICATION = "NOTIFICATION"

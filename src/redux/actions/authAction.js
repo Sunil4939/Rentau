@@ -9,6 +9,7 @@ import { BookingHistoryApi, ShowAllBookingApi } from "./bookingAction";
 import { GetCarListApi } from "./vendorRegistration";
 import { AvailableLocationApi } from "./searchAction";
 import { GetAllNotification } from "./notificationAction";
+import { displayNotification, sendNotification } from "../../services/notification";
 
 const InitialCall = () => async dispatch => {
     dispatch(GetUserDataApi())
@@ -211,7 +212,7 @@ export const UpdateUserApi = (postData, navigation) => async dispatch => {
 
 export const GetUserDataApi = () => async dispatch => {
     const userId = await AsyncStorage.getItem("@USER_ID")
-    // console.log("usfs fi id ; ", userId)
+    // console.log("GetUserDataApi user id ; ", userId)
     dispatch({
         type: LOADING,
         payload: true,
@@ -219,6 +220,8 @@ export const GetUserDataApi = () => async dispatch => {
     http.get(`getDetails/${userId}`)
         .then(async response => {
             if (response.data.response) {
+                // displayNotification(response.data.data[0])
+                // sendNotification(response.data.data[0]?.device_token, response.data.data[0])
                 dispatch({
                     type: USER_DATA,
                     payload: response.data.data[0],

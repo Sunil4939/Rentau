@@ -15,6 +15,7 @@ import styles from "./styles";
 import HeaderLeft from "../component/atoms/HeaderLeft";
 import Header1 from "../component/atoms/Header1";
 import Header from "../component/atoms/Header";
+import Notification from "../screens/Notification";
 
 
 const Tab = createBottomTabNavigator();
@@ -57,13 +58,14 @@ const BottomTab = ({ token, userData, userRole }) => {
         <>
           <Tab.Screen name="Search" component={searchPage}
             options={() => ({
+              headerShown: false,
               tabBarIcon: ({ color }) => <Icons name={"search"} size={25} color={color} />
             })}
-          />
+          /> 
 
           <Tab.Screen name="CarList" component={token ? AllCarList : Auth}
             options={() => ({
-              headerShown: token ? true : false,
+              headerShown: false,
               tabBarLabel: token ? "Car List" : "Login",
               tabBarIcon: ({ color }) => <Icons name={token ? "carlist" : "accountcircle"} size={token ? 25 : 30} color={color} />
             })}

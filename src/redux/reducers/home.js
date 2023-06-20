@@ -1,8 +1,9 @@
-import { LOADING,  All_CAR_LIST } from "../types";
+import { LOADING,  All_CAR_LIST, DEVICE_TOKEN } from "../types";
 
 const initialState = {
     loading: false,
-    allCarList: null
+    allCarList: null,
+    device_token: null,
 }
 
 export default (state = initialState, action) => {
@@ -12,7 +13,11 @@ export default (state = initialState, action) => {
                 ...state,
                 allCarList: action.payload
             }
-           
+            case DEVICE_TOKEN:
+                return {
+                    ...state,
+                    device_token: action.payload
+                }
             case LOADING:
                 return {
                     ...state,

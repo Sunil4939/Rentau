@@ -54,14 +54,15 @@ export const createCustomer = (amount, currency) => async (dispatch, getState) =
 };
 
 export const createPaymentIntent = (amount, currency, customerId) => async (dispatch, getState) => {
-
-    amount = await amount == 0 ? 1* 100 : amount * 100
-    //    currency = "INR"
+    // console.log("amt and cur1 : ", amount, currency, customerId)
+    amount = await (amount == 0 ? 1* 100 : (amount * 100).toFixed(0))
+    // amount = 100
+    // currency = "INR"
     dispatch({
         type: LOADING,
         payload: true,
     });
-    // console.log("amt and cur : ", amount, currency) 
+    console.log("amt and cur : ", amount, currency, customerId)
 
 
     stripeHttp.post(`payment_intents?amount=${amount}&currency=INR&customer=${customerId}`)
@@ -84,24 +85,22 @@ export const createPaymentIntent = (amount, currency, customerId) => async (disp
                     type: LOADING,
                     payload: false,
                 });
-                // RNToasty.Info({
-                //     title: response.data.message,
-                //     duration: 2,
-                // });
+                RNToasty.Info({
+                    title: response.data.message,
+                    duration: 2,
+                });
             }
         })
         .catch(error => {
-            console.log("create payment intent error : ", error)
+            console.log("create payment intent error : ", error.response)
             dispatch({
                 type: LOADING,
                 payload: false,
             });
-            // if (error.response.data.message) {
-            //     RNToasty.Error({
-            //         title: error.response.data.message,
-            //         duration: 2,
-            //     });
-            // }
+            RNToasty.Error({
+                title: "Payment intent error",
+                duration: 2,
+            });
 
         })
 };

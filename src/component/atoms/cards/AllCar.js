@@ -60,10 +60,10 @@ const styles = StyleSheet.create({
 
     priceRow: {
         // borderWidth: 1,
-        width: SIZES.width * .4,
+        width: SIZES.width * .7,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        // justifyContent: 'space-between',
         marginTop: SIZES.height * .01,
     },
 

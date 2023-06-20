@@ -107,7 +107,7 @@ const MorePage = ({ LogoutApi, navigation, userData, loading, token, userRole, G
                             :
                             <NavigateButton iconName={"contact"}
                                 iconStyle={styles.account}
-                                onPress={() => { navigation.navigate("Terms") }}                                >
+                                onPress={() => { navigation.navigate(token ? "Terms" : "Login") }}                                >
                                 Become a host
                             </NavigateButton>
                         }

@@ -9,15 +9,16 @@ import { http2 } from '../../services/api'
 
 const TripDetails = ({ loading, route, userRole }) => {
 
-    const data = route.params.data.booking_details ? route.params.data.booking_details : route.params.data
+    const data = route.params.data?.booking_details ? route.params.data?.booking_details : route.params.data
     const insurance = route.params.data.insurance ? route.params.data.insurance : null
 
     const customerData = route.params.data.message ? route.params.data.message : null
 
     const driverData = route.params.data && route.params.data.host_details && route.params.data.host_details[0]
 
-    console.log("insurance : ", insurance)
+    // console.log("insurance : ", insurance)
     // console.log("userRole : ", userRole)
+    console.log("route trip notification data : ", route.params.data)
 
 
     return (
@@ -52,11 +53,12 @@ const TripDetails = ({ loading, route, userRole }) => {
                                     </View>
                                     <View style={styles.label_row}>
                                         <Text style={styles.label}>Car Details: </Text>
-                                        <Text style={styles.text}>{data && data.car && `${data.car.brand} ${data.car.transmission} ${data.car.fuel == 'petrol' ? 'gasoline' : data.car.fuel} ${data.car.color} ${data.car.build_year}`}</Text>
+                                        <Text style={styles.text}>{data && data.car && `${data.car?.brand} ${data.car?.transmission} ${data.car.fuel == 'petrol' ? 'gasoline' : data.car.fuel} ${data.car.color} ${data.car.build_year}`}</Text>
                                     </View>
                                     <View style={styles.label_row}>
                                         <Text style={styles.label}>Insurance Amount: </Text>
-                                        <Text style={styles.text}>{insurance ? "$"+ (insurance.amount > 0 ? insurance.amount :  0 ):"$"+ 0}</Text>
+                                        <Text style={styles.text}>{"$" + insurance?.amount}</Text>
+                                        {/* <Text style={styles.text}>{insurance ? "$"+ (insurance.amount > 0 ? insurance.amount :  0 ):"$"+ 0}</Text> */}
                                     </View> 
                                     <View style={styles.review_row}>
                                         <Text style={styles.review}>5.0</Text>
@@ -74,14 +76,14 @@ const TripDetails = ({ loading, route, userRole }) => {
 
                     <View style={styles.date_row}>
                         <Text style={styles.pickup}>Pickup Date:-</Text>
-                        <Text style={styles.text}>{data && data.trip_start_date.split("T")?.[0]}</Text>
-                        <Text style={styles.text}>{data && data.start_time}</Text>
+                        <Text style={styles.text}>{data && data?.trip_start_date?.split("T")?.[0]}</Text>
+                        <Text style={styles.text}>{data && data?.start_time}</Text>
                         {/* <Text style={styles.text}>{formatAMPM(new Date(data && data.start_time))}</Text> */}
                     </View>
                     <View style={styles.hr_line} />
                     <View style={styles.date_row}>
                         <Text style={styles.pickup}>Drop Date:-</Text>
-                        <Text style={styles.text}>{data && data.trip_end_date.split("T")?.[0]}</Text>
+                        <Text style={styles.text}>{data && data?.trip_end_date?.split("T")?.[0]}</Text>
                         <Text style={styles.text}>{data && data.end_time}</Text>
                         {/* <Text style={styles.text}>{formatAMPM(new Date(data && data.end_time))}</Text> */}
                     </View>
@@ -140,14 +142,14 @@ const TripDetails = ({ loading, route, userRole }) => {
 
                         <View style={styles.date_row}>
                             <Text style={styles.pickup}>Pickup Date:-</Text>
-                            <Text style={styles.text}>{data && data.trip_start_date.split("T")?.[0]}</Text>
+                            <Text style={styles.text}>{data && data.trip_start_date?.split("T")?.[0]}</Text>
                             <Text style={styles.text}>{data && data.start_time}</Text>
                             {/* <Text style={styles.text}>{formatAMPM(new Date(data && data.start_time))}</Text> */}
                         </View>
                         <View style={styles.hr_line} />
                         <View style={styles.date_row}>
                             <Text style={styles.pickup}>Drop Date:-</Text>
-                            <Text style={styles.text}>{data && data.trip_end_date.split("T")?.[0]}</Text>
+                            <Text style={styles.text}>{data && data.trip_end_date?.split("T")?.[0]}</Text>
                             <Text style={styles.text}>{data && data.end_time}</Text>
                             {/* <Text style={styles.text}>{formatAMPM(new Date(data && data.end_time))}</Text> */}
                         </View>

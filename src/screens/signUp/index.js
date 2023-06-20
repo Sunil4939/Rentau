@@ -1,6 +1,6 @@
 import CheckBox from '@react-native-community/checkbox';
-import React, { useState } from 'react'
-import { View, Text, TouchableOpacity } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { View, Text, TouchableOpacity, Platform } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { RNToasty } from 'react-native-toasty';
 import { connect } from 'react-redux';
@@ -10,18 +10,20 @@ import InputWithIcon1 from '../../component/atoms/inputs/InputWithIcon1';
 import { COLORS, SIZES } from '../../constants';
 import { SignUpApi } from '../../redux/actions/authAction';
 import styles from './styles';
+import { getDeviceToken } from '../../services/notification';
 
 
-const SignUp = ({ navigation, SignUpApi }) => {
+const SignUp = ({ navigation, SignUpApi, device_token }) => {
     const [secure, setSecure] = useState(true)
     const [secure1, setSecure1] = useState(true)
     const [checked, setChecked] = useState(false)
 
     const [postData, setPostData] = useState({
-        name: "",
-        email: "",
-        password: "",
-        confirm_password: "",
+        name: null,
+        email: null,
+        password: null,
+        confirm_password: null,
+        device_token: null,
     })
     const handleChange = (name, value) => {
         setPostData({
@@ -32,23 +34,48 @@ const SignUp = ({ navigation, SignUpApi }) => {
 
 
     const handleSubmit = () => {
-        if (postData.name && postData.email && postData.password && postData.confirm_password) {
-            if (checked) {
-                SignUpApi(postData, navigation)
-                // console.log("postdata: ", postData)
+        if (postData.device_token) {
+            if (postData.name && postData.email && postData.password && postData.confirm_password) {
+                if (checked) {
+                    SignUpApi(postData, navigation)
+                    // console.log("postdata: ", postData)
+                } else {
+                    RNToasty.Error({
+                        title: "Please checked terms and policy",
+                        duration: 2
+                    })
+                }
             } else {
                 RNToasty.Error({
-                    title: "Please checked terms and policy",
+                    title: "Please fill all fields",
                     duration: 2
                 })
             }
         } else {
             RNToasty.Error({
-                title: "Please fill all fields",
+                title: "Your device token is null",
                 duration: 2
             })
         }
+
     }
+
+    useEffect(() => {
+        if (Platform.OS == "android") {
+            getDeviceToken().then(deviceToken => {
+                console.log("response device token : ", deviceToken);
+                handleChange("device_token", deviceToken)
+            }).catch(err => {
+                console.log("deviceToken error : ", err);
+            })
+        } else {
+            console.log("error permission")
+        }
+    }, [])
+
+    console.log("signup postdata : ", postData)
+
+
     return (
         <KeyboardAwareScrollView
             keyboardShouldPersistTaps={'handled'}
@@ -63,20 +90,7 @@ const SignUp = ({ navigation, SignUpApi }) => {
                     onChangeText={(text) => handleChange("name", text)}
                     value={postData.name}
                 />
-                {/* <InputWithIcon
-                    label={"First Name"}
-                    placeholder={"Enter Your First Name"}
-                    leftIcon={"user"}
-                    onChangeText={(text) => setFname(text)}
-                    value={fname}
-                /> */}
-                {/* <InputWithIcon
-                    label={"Last Name"}
-                    placeholder={"Enter Your Last Name"}
-                    leftIcon={"user"}
-                    onChangeText={(text) => setLname(text)}
-                    value={lname}
-                /> */}
+
                 <InputWithIcon
                     label={"Email Id"}
                     placeholder={"Enter Your Email Id"}
@@ -139,7 +153,7 @@ const SignUp = ({ navigation, SignUpApi }) => {
 }
 
 const mapStateToProps = (state) => ({
-
+    device_token: state.home.device_token,
 })
 
 const mapDispatchToProps = {

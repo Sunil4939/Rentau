@@ -13,11 +13,11 @@ import { GetCarListApi } from '../../redux/actions/vendorRegistration'
 
 
 
-const HomePage = ({ navigation, token, userData,AllCarListApi, location, allCarList,SingleCarDataApi, GetCarListApi,carList }) => {
+const HomePage = ({ navigation, token, userData, AllCarListApi, location, allCarList, SingleCarDataApi, GetCarListApi, carList }) => {
   useEffect(() => {
     AllCarListApi()
     GetCarListApi()
-  },[])
+  }, [])
 
   const topCars = allCarList && allCarList.filter(item => item.location.price > 50)
 
@@ -34,7 +34,7 @@ const HomePage = ({ navigation, token, userData,AllCarListApi, location, allCarL
         <View style={styles.row}>
           <View style={styles.row1}>
             <TouchableOpacity style={{ ...styles.profileBox, borderWidth: userData ? 0 : 1 }}
-             onPress={() => navigation.navigate("More")}
+              onPress={() => navigation.navigate("More")}
             >
               {token ?
                 <View>
@@ -61,7 +61,7 @@ const HomePage = ({ navigation, token, userData,AllCarListApi, location, allCarL
             </View>
           </View>
           <TouchableOpacity style={styles.notificationBtn}
-          onPress={() => navigation.navigate("Inbox")}
+            onPress={() => navigation.navigate("Inbox")}
           >
             <Icons name={"notification"} size={28} color={COLORS.black} />
             <View style={styles.countBox}>
@@ -131,18 +131,18 @@ const HomePage = ({ navigation, token, userData,AllCarListApi, location, allCarL
             <View>
               {carList && carList[0] && carList.map((item) => (
                 <AllCar key={item.id}
-                  source={item.image && item.image.front ? {uri: http2 + item.image.front} : images.car1}
-                  price={"$" +item.location.price}
+                  source={item.image && item.image.front ? { uri: http2 + item.image.front } : images.car1}
+                  price={"$" + item.location.price}
                   carName={item.brand}
                   start={item.location.location}
-                  onPress={() => { SingleCarDataApi(item.id), navigation.navigate("ProductDetails", {routeName: "HomePage"}) }}
-                  // onPress={() => { navigation.navigate("ProductDetails", { carData: item }) }}
+                  onPress={() => { SingleCarDataApi(item.id), navigation.navigate("ProductDetails", { routeName: "HomePage" }) }}
+                // onPress={() => { navigation.navigate("ProductDetails", { carData: item }) }}
                 />
               ))}
             </View>
 
-
-            {location &&
+            {/* Available location container */}
+            {/* {location &&
               <View
                 style={{ width: SIZES.width * .9, }}
               >
@@ -164,7 +164,7 @@ const HomePage = ({ navigation, token, userData,AllCarListApi, location, allCarL
                 />
 
               </View>
-            }
+            } */}
           </View>
         </View>
       </ScrollView>
@@ -181,9 +181,9 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
-    AllCarListApi,
-    SingleCarDataApi,
-    GetCarListApi,
+  AllCarListApi,
+  SingleCarDataApi,
+  GetCarListApi,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomePage)

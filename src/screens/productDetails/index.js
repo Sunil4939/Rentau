@@ -940,7 +940,9 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
 
                         <Button1 style={styles.btn}
                           backgroundColor={COLORS.black} textColor={COLORS.white}
-                          onPress={() => { setCheckout(!checkout), StoreCarBookingApi({ ...postData, "carPrice": totalPrice }, (Number(totalPrice)).toFixed(2), "INR", navigation) }}
+                          onPress={() => { setCheckout(!checkout), StoreCarBookingApi({ ...postData,
+                            "subtotal":postData.carPrice,
+                             "carPrice": totalPrice }, (Number(totalPrice)).toFixed(2), "INR", navigation) }}
                         >
                           Process To Check Out
                         </Button1>
