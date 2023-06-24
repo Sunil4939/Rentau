@@ -23,6 +23,7 @@ import formatDate from '../../services/date'
 import { http2 } from '../../services/api'
 import CheckBox from '@react-native-community/checkbox'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import combineDateAndTime from '../../services/combineDateAndTime'
 
 
 
@@ -87,13 +88,14 @@ const RatingRow = ({ text, rating }) => {
   )
 }
 
-const SelectTrip = ({ style, placeholderDate, label, placeholderTime, onChangeDate, onChangeTime, date, time }) => {
+const SelectTrip = ({ style, placeholderDate, label, onSelectedDate, placeholderTime, onChangeDate, onChangeTime, date, time }) => {
   // const [date, setDate] = useState(false);
   const [display, setDisplay] = useState(false);
 
   const selectDate = (event, selectedDate) => {
     const currentDate = selectedDate || startDate;
     setDisplay(false);
+    onSelectedDate && onSelectedDate(currentDate)
     let month = String(currentDate.getMonth() + 1).length == 1 ? `0${(currentDate.getMonth() + 1)}` : `${(currentDate.getMonth() + 1)}`
     let d = String(currentDate.getDate()).length == 1 ? `0${currentDate.getDate()}` : `${currentDate.getDate()}`
     onChangeDate && onChangeDate(`${d}-${month}-${currentDate.getFullYear()}`)
@@ -171,9 +173,7 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
   let car_ratings = singleCarData && singleCarData.car_details && singleCarData.car_details.car_rating
 
 
-  const [visible, setVisible] = useState(false)
   const [checkout, setCheckout] = useState(false)
-  const [checked, setChecked] = useState(false)
 
   const [condition, setCondition] = useState()
 
@@ -183,7 +183,8 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
   let date = String(d.getDate()).length == 1 ? `0${d.getDate()}` : `${d.getDate()}`
   date = `${date}-${month}-${d.getFullYear()}`
 
-
+  const [startDate, setStartDate] = useState(d)
+  const [endDate, setEndDate] = useState(d)
 
   // console.log("single car data car id : ", singleCarData && singleCarData.car_details && singleCarData.car_details.id)
 
@@ -258,7 +259,7 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
   const handleCarBook = () => {
     if (token) {
       calculateCarPrice()
-      setCheckout(!checkout)
+      // setCheckout(!checkout)
     } else {
       RNToasty.Normal({
         title: 'Please Login first',
@@ -284,23 +285,9 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
   }
 
 
-  let booking_days = Number(postData.endDate && postData.endDate.split("-")?.[0]) - Number(postData.startDate && postData.startDate.split("-")?.[0])
-  booking_days = booking_days + 1
-  // booking_days = booking_days == 0 ? 1 : booking_days
 
   const [totalPrice, setTotalPrice] = useState()
   const [amount, setAmount] = useState()
-
-
-  useEffect(() => {
-    if (data) {
-      setPostData({
-        ...postData,
-        "carPrice": amount,
-        "distanceAllowed": data.distance * booking_days,
-      })
-    }
-  }, [booking_days, amount])
 
 
   useEffect(() => {
@@ -321,61 +308,60 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
   }, [postData.gst, postData.qst])
 
   const calculateCarPrice = () => {
-    let price;
-    let startTime, endTime, startAMPM, endAMPM;
-
-    if (postData) {
-      startTime = postData.startTime && postData.startTime.split(":")?.[0]
-      startAMPM = postData.startTime && postData.startTime.split(" ")?.[1]
-      endTime = postData.endTime && postData.endTime.split(":")?.[0]
-      endAMPM = postData.endTime && postData.endTime.split(" ")?.[1]
-    }
     if (data) {
-      if (booking_days == 1) {
-        price = Number(startTime) < 12 && startAMPM == "AM" ? (data.price) : Number(data.price / 2)
-        console.log(" price 1 : ", price)
-        price = Number(endTime) < 12 && endAMPM == "PM" ? price : Number(price + (data.price / 2))
-        console.log(" price 1.1 : ", price)
-        price = postData.insurance ? price + (25 * booking_days) : price
-        // console.log("start time1 : ", startTime, startAMPM)
-        // console.log("end time1 : ", endTime, endAMPM)
-        // console.log("booking_days, price 1.2 : ", booking_days, price)
-      } else if (booking_days == 2) {
-        price = Number(startTime) < 12 && startAMPM == "AM" ? (data.price) : Number(data.price / 2)
-        // console.log(" price 2 : ", price)
-        price = Number(endTime) < 12 && endAMPM == "PM" ? Number(price + data.price) : Number(price + (data.price / 2))
-        // console.log(" price 2.1 : ", price)
-        price = postData.insurance ? price + (25 * booking_days) : price
-        // console.log("start time2 : ", startTime, startAMPM)
-        // console.log("end time2 : ", endTime, endAMPM)
-        // console.log("booking_days, price 2.2 : ", booking_days, price)
-      } else if (booking_days > 2) {
-        price = Number(startTime) < 12 && startAMPM == "AM" ? (data.price) : Number(data.price / 2)
-        console.log(" price 3 : ", price)
-        price = price + (data.price * (booking_days - 2))
-        console.log(" price 3.0 : ", price)
-        price = Number(endTime) < 12 && endAMPM == "PM" ? Number(price + data.price) : Number(price + (data.price / 2))
-        console.log(" price 3.1 : ", price)
-        price = postData.insurance ? price + (25 * booking_days) : price
-        // console.log("start time3 : ", startTime, startAMPM)
-        // console.log("end time3 : ", endTime, endAMPM) 
-        console.log("booking_days, price 3.2 : ", booking_days, price)
+      let total_days = calculteTotalDays()
+      console.log("total_days ; ", total_days);
+      if (total_days) {
+        setPostData({
+          ...postData,
+          "carPrice": postData.insurance ? (data.price + 25) * total_days : data.price * total_days,
+          "distanceAllowed": data.distance * total_days,
+        })
+        setCheckout(!checkout)
       }
-      setAmount(price)
+
     }
 
   }
 
+  const calculteTotalDays = () => {
+    var today = new Date()
+    var date1 = combineDateAndTime(startDate, postData.startTime);
+    var date2 = combineDateAndTime(endDate, postData.endTime);
+    var total_hours = ((date2.getTime() - date1.getTime()) / (1000 * 3600)).toFixed(2);
+    var days = parseInt(total_hours / 24)
+    var hours = (total_hours % 24).toFixed(2);
+    let total_days = 0;
 
-  // console.log("ratings  details: ", car_ratings && car_ratings[0] && car_ratings[0].student_id)
-  // console.log("userId product details: ", userId,  postData.carPrice, postData.gst, postData.qst) 
+    console.log("hours ; ", days, hours, total_hours);
 
-  // console.log("product details car id : ", postData.carId, postData.insurance, postData.distanceAllowed, booking_days)
-  // console.log("postdata  start time end time  : ", postData.startTime, postData.endTime)
+    if (date1.getTime() > today.getTime() && date2.getTime() > today.getTime()) {
+      // console.log("date1 date2 : ", date1.getTime(), date2.getTime())
+      if (days <= 0 && hours <= 0) {
+        RNToasty.Error({
+          title: 'Please select valid date and time',
+          duration: 2,
+        })
+      } else if (days == 0 && hours > 0) {
+        total_days = hours <= 12 ? 0.5 : 1
+      } else if (days >= 1 && hours == 0) {
+        total_days = Number(days)
+      }
+      else if (days >= 1 && hours > 0) {
+        total_days = hours <= 12 ? Number(days) + 0.5 : Number(days) + 1
+      }
+    } else {
+      RNToasty.Error({
+        title: 'Please select valid time',
+        duration: 2,
+      })
+    }
+    return total_days
+  }
 
-  console.log("userId product details: ", userId, postData.carPrice, postData.gst, postData.qst, totalPrice)
   
 
+  console.log(`userId ${userId}, carprice ${postData.carPrice}, totalPrice ${totalPrice}  product details: `, postData.distanceAllowed, postData.gst, postData.qst,)
 
 
   return (
@@ -439,6 +425,7 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
                     onChangeTime={(time) => handleChange("startTime", time)}
                     date={postData.startDate}
                     time={postData.startTime}
+                    onSelectedDate={(date) => setStartDate(date)}
                   />
                   <SelectTrip
                     style={{ marginTop: SIZES.height * .02, }}
@@ -450,6 +437,7 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
                     onChangeTime={(time) => handleChange("endTime", time)}
                     date={postData.endDate}
                     time={postData.endTime}
+                    onSelectedDate={(date) => setEndDate(date)}
                   />
                 </View>
 
@@ -507,13 +495,6 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
                 </View>
                 <View style={styles.hr_line1} />
 
-                {/* distance */}
-                {/* <View style={styles.descriptionBox}>
-                  <Text style={styles.title}>Distance Included</Text>
-                  <Text style={styles.text}>Unlimited</Text>
-                </View>
-                <View style={styles.hr_line1} /> */}
-
                 {/* Insurance & Protection */}
                 <View style={styles.descriptionBox}>
                   <Text style={styles.title}>Insurance & Protection</Text>
@@ -548,12 +529,7 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
                       </View>
                       <Text style={styles.featureText}>{car_details.seat} Seats</Text>
                     </View>
-                    {/* <View style={styles.featureRow1} >
-                      <View style={styles.featureIcon}>
-                        <Icons name={"play"} size={10} color={COLORS.white} />
-                      </View>
-                      <Text style={styles.featureText}>4 Door</Text>
-                    </View> */}
+
                     <View style={styles.featureRow1}>
                       <View style={styles.featureIcon}>
                         <Icons name={"play"} size={10} color={COLORS.white} />
@@ -563,33 +539,7 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
                   </View>
                 </View>
 
-                {/* deluxe class */}
-                {/* <View style={styles.descriptionBox}>
-                  <Text style={styles.title}>Deluxe Class</Text>
-                  {car_details.description &&
-                    <Text style={styles.text}>{car_details.description.length > 100 ? car_details.description.slice(0, 100) + "..." : car_details.description}</Text>
-                  }
-                  <View style={{ alignItems: 'flex-end' }}>
-                    {car_details.description.length > 100 &&
-                      <TouchableOpacity style={styles.readMoreBtn}
-                        onPress={() => setCondition("deluxe")}
-                      >
-                        <Text style={styles.readMoreText}>Read More</Text>
-                      </TouchableOpacity>
-                    }
-                    <BottomSheetBox
-                      visible={condition == "deluxe"}
-                      onPress={() => setCondition(false)}
-                    >
-                      {car_details.description}
-                    </BottomSheetBox>
-                  </View>
-                </View>
-                <View style={styles.hr_line1} /> */}
 
-                {/* rating and review box */}
-                {/* <Text style={{ ...styles.title, marginTop: SIZES.height * .02, width: SIZES.width * .9 }}>Reviews</Text> */}
-                {/* {singleCarData.car_details && singleCarData.car_details.car_rating[0] ? */}
                 {car_ratings && car_ratings[0] ?
                   <View style={styles.rating_card_container}>
                     <FlatList
@@ -611,33 +561,14 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
                       showsVerticalScrollIndicator={false}
                     />
 
-                    {/* {singleCarData.car_rating.length > 1 &&
-                      <View style={{ width: SIZES.width * .94, alignItems: 'flex-end' }}>
-                        <TouchableOpacity style={styles.readMoreBtn}>
-                          <Text style={styles.readMoreText}>See All Reviews</Text>
-                        </TouchableOpacity>
-                      </View>
-                    } */}
+
                   </View>
                   :
                   <View style={styles.no_data_box}>
                     <Text style={styles.no_data}>No Car Ratings Available</Text>
                   </View>
                 }
-                {/* <View style={styles.ratingContainer}>
-                  <Text style={styles.ratingTitle}>Ratings and Reviews </Text>
-                  <View style={styles.rating_title_row}>
-                    <Text style={styles.rating_title1}>5.0</Text>
-                    <Image source={icons.star} style={styles.star} resizeMode='contain' />
-                    <Text style={styles.rating_title1}>(43 ratings)</Text>
-                  </View>
-                  <RatingRow text={"Cleanliness"} rating={"5.0"} />
-                  <RatingRow text={"Maintenance"} rating={"4.2"} />
-                  <RatingRow text={"Communication"} rating={"5.0"} />
-                  <RatingRow text={"Convenience"} rating={"4.8"} />
-                  <RatingRow text={"Lisitng Accuracy"} rating={"5.0"} />
-                  <Text style={styles.rating_text1}>Baser on 33 guest ratings</Text>
-                </View> */}
+
 
                 {/* rating card container */}
 
@@ -663,98 +594,10 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
                       </View>
 
 
-                      {/* <View style={styles.hostIconRow}>
-                    <View style={styles.hostIconBox}>
-                      <Image source={icons.shield1} style={styles.hostIcon} resizeMode='contain' />
-                    </View>
-                    <View style={styles.host_text_box}>
-                      <Text style={styles.host_text}>lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident,</Text>
-                      <View style={{ alignItems: 'flex-start' }}>
-                        <TouchableOpacity style={styles.readMoreBtn}>
-                          <Text style={styles.readMoreText}>Learn More</Text>
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                  </View> */}
-                      {/* <View style={styles.hostIconRow}>
-                    <View style={styles.handBox}>
-                      <Image source={icons.hand} style={styles.hostIcon} resizeMode='contain' />
-                    </View>
-                    <View style={styles.host_text_box}>
-                      <Text style={styles.host_text}>lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident,</Text>
-                      <View style={{ alignItems: 'flex-start' }}>
-                        <TouchableOpacity style={styles.readMoreBtn}>
-                          <Text style={styles.readMoreText}>Learn More</Text>
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                  </View> */}
                     </View>
                     <View style={styles.hr_line1} />
                   </>
                 }
-
-
-                {/* more info container */}
-                {/* <View style={styles.more_container}>
-                  <Text style={styles.infoTitle}>Extras (2)</Text>
-                  <Text style={styles.infoText}>Add optional Extras to your trip at check out</Text>
-                  <View style={{ alignItems: 'flex-end' }}>
-                    <TouchableOpacity style={styles.readMoreBtn}>
-                      <Text style={styles.readMoreText}>More Info</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View> */}
-
-                {/* safety container */}
-                {/* <View>
-                  <View style={styles.safetyBox}>
-                    <Text style={styles.safetyTitle}>Child Safety Seat</Text>
-                    <View style={styles.safetyRow}>
-                      <Text style={styles.safety_text}>$55/trip</Text>
-                      <Text style={styles.safety_text}>2 Available</Text>
-                    </View>
-                  </View>
-                  <View style={styles.safetyBox}>
-                    <Text style={styles.safetyTitle}>Unlimited Mileage</Text>
-                    <View style={styles.safetyRow}>
-                      <Text style={styles.safety_text}>$55/trip</Text>
-                      <Text style={styles.safety_text}>1 Available</Text>
-                    </View>
-                  </View>
-                </View>
-                <View style={styles.hr_line1} /> */}
-
-                {/* booking container */}
-                {/* <View style={styles.bookingBox}>
-                  <Text style={styles.booking_title}>Book Car Now </Text>
-                  <Text style={styles.booking_text}>Starting From $70.00</Text>
-
-                  <View>
-                    <SelectDropdown
-                      dropdownIconPosition={'right'}
-                      rowTextStyle={{ textAlign: 'center', padding: 0 }}
-                      renderDropdownIcon={() => (
-                        <Icons name="down" size={15} style={styles.down} color={COLORS.black} />
-                      )}
-                      dropdownStyle={styles.dropDown}
-                      buttonStyle={{ ...styles.dropDownBtnStyle, backgroundColor: COLORS.light, borderWidth: 0 }}
-                      buttonTextStyle={styles.dropDownTextStyle}
-                      data={["data"]}
-                      defaultValueByIndex={0}
-                      onSelect={(selectedItem, index) => {
-                        console.log(selectedItem, index)
-                        // onChangeText && onChangeText(selectedItem, index)
-                      }}
-                      buttonTextAfterSelection={(selectedItem, index) => {
-                        return selectedItem
-                      }}
-                      rowTextForSelection={(item, index) => {
-                        return item
-                      }}
-                    />
-                  </View>
-                </View> */}
 
                 {/* pick up location */}
                 <View style={styles.bookingBox}>
@@ -786,20 +629,6 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
                   </View>
                 </View>
 
-                {/* resources container */}
-                {/* <View style={styles.resource_box}>
-                  <Text style={styles.resource_title}>Resources</Text>
-                  <ResourceRow title={"Additional Drivers"} price={"$8.95 - Per Day"} />
-                  <ResourceRow title={"Unlimited Mileage"} price={"$12.95 - Per Day"} />
-                  <ResourceRow title={"CDW + PAP Full Coverage"} price={"$30.00 - Per Day"} />
-                  <ResourceRow title={"Additional Drivers"} price={"$8.95 - Per Day"} />
-                  <ResourceRow title={"Included mileage"} price={"250km/day($0.15 per KM/Calculated upon return)"} />
-                  <ResourceRow title={"Plating Fees"} price={"$1.49 - Per Day"} />
-                  <Text style={styles.resource_text}>Plating Fees are mandatory daily charges to recuperate the cost of licensing the vehicle. This is customary with all rental agencies in North America.</Text>
-                  <ResourceRow title={"Reg. Recovery – Tires"} price={"$3.25 - Per Day"} />
-                  <Text style={styles.resource_text}>All vehicles rented in Quebec must have winter tires between Dec 1st and March 15th - It's the law! Tire Fees are mandatory daily charges to recuperate the cost of winter tires, installation and storage which are spread out over the entire year.
-                  </Text>
-                </View> */}
 
                 <View>
                   <Text style={styles.pickup_title}>Insurance Details</Text>
@@ -921,10 +750,7 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
                           <Text style={styles.totalBtnText}>GST</Text>
                           <Text style={styles.totalBtnText}>{"$" + postData.gst}</Text>
                         </View>
-                        {/* <View style={styles.totalBtn}>
-                          <Text style={styles.totalBtnText}>Insurance Amount</Text>
-                          <Text style={styles.totalBtnText}>{data && data.currency.symbol + (postData.insurance ?  25 * booking_days : "0")}</Text>
-                        </View> */}
+
                         <View style={styles.totalBtn}>
                           <Text style={styles.totalBtnText}>QST</Text>
                           <Text style={styles.totalBtnText}>{"$" + postData.qst}</Text>
@@ -940,9 +766,13 @@ const ProductDetails = ({ navigation, singleCarData, SingleCarDataApi, StoreCarB
 
                         <Button1 style={styles.btn}
                           backgroundColor={COLORS.black} textColor={COLORS.white}
-                          onPress={() => { setCheckout(!checkout), StoreCarBookingApi({ ...postData,
-                            "subtotal":postData.carPrice,
-                             "carPrice": totalPrice }, (Number(totalPrice)).toFixed(2), "INR", navigation) }}
+                          onPress={() => {
+                            setCheckout(!checkout), StoreCarBookingApi({
+                              ...postData,
+                              "subtotal": postData.carPrice,
+                              "carPrice": totalPrice
+                            }, (Number(totalPrice)).toFixed(2), "INR", navigation)
+                          }}
                         >
                           Process To Check Out
                         </Button1>
